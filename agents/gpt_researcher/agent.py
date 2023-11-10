@@ -5,8 +5,8 @@ import asyncio
 
 import openai
 
-from gpt_researcher.retriever.retriever_agent import RetrieverAgent
-from gpt_researcher.utils.setup_check import check_agent_setup, check_openai_api_key
+from gpt_researcher_old.retriever.retriever_agent import RetrieverAgent
+from gpt_researcher_old.utils.setup_check import check_agent_setup, check_openai_api_key
 
 
 class GPTResearcher:
@@ -84,17 +84,3 @@ class GPTResearcher:
         report, path = await research_context.write_report(report_type, websocket)
 
         return report, path
-
-
-# Example
-async def main():
-    researcher = GPTResearcher.from_json("config.json")
-
-    report, path = await researcher.conduct_research("rank the strongest characters in jujutsu kaisen",
-                                                     "research_report")
-
-    print(report)
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
