@@ -3,22 +3,23 @@ from gpt_researcher.config import Config
 from gpt_researcher.master.functions import *
 from gpt_researcher.context.compression import ContextCompressor
 from gpt_researcher.memory import Memory
+from gpt_researcher.retrievers import get_retriever
 
 
 class GPTResearcher:
     """
     GPT Researcher
     """
-    def __init__(self, query, report_type="research_report", source_urls=None, config_path=None, websocket=None):
+    def __init__(self, idea, report_type="idea_research_report", source_urls=None, config_path=None, websocket=None):
         """
         Initialize the GPT Researcher class.
         Args:
-            query:
+            idea:
             report_type:
             config_path:
             websocket:
         """
-        self.query = query
+        self.idea = idea
         self.agent = None
         self.role = None
         self.report_type = report_type
@@ -36,22 +37,22 @@ class GPTResearcher:
         Returns:
             Report
         """
-        print(f"🔎 Running research for '{self.query}'...")
+        print(f"🔎 Running research for '{self.idea}'...")
         # Generate Agent
-        self.agent, self.role = await choose_agent(self.query, self.cfg)
+        self.agent, self.role = await choose_agent(self.idea, self.cfg)
         await stream_output("logs", self.agent, self.websocket)
 
         # If specified, the researcher will use the given urls as the context for the research.
         if self.source_urls:
             self.context = await self.get_context_by_urls(self.source_urls)
         else:
-            self.context = await self.get_context_by_search(self.query)
+            self.context = await self.get_context_by_search(self.idea)
 
         # Write Research Report
         if self.report_type == "custom_report":
             self.role = self.cfg.agent_role if self.cfg.agent_role else self.role
-        await stream_output("logs", f"✍️ Writing {self.report_type} for research task: {self.query}...", self.websocket)
-        report = await generate_report(query=self.query, context=self.context,
+        await stream_output("logs", f"✍️ Writing {self.report_type} for research task: {self.idea}...", self.websocket)
+        report = await generate_report(query=self.idea, context=self.context,
                                        agent_role_prompt=self.role, report_type=self.report_type,
                                        websocket=self.websocket, cfg=self.cfg)
         time.sleep(2)
@@ -66,17 +67,17 @@ class GPTResearcher:
                             f"🧠 I will conduct my research based on the following urls: {new_search_urls}...",
                             self.websocket)
         scraped_sites = scrape_urls(new_search_urls, self.cfg)
-        return await self.get_similar_content_by_query(self.query, scraped_sites)
+        return await self.get_similar_content_by_query(self.idea, scraped_sites)
 
-    async def get_context_by_search(self, query):
+    async def get_context_by_search(self, idea):
         """
-           Generates the context for the research task by searching the query and scraping the results
+           Generates the context for the research task by searching the idea and scraping the results
         Returns:
             context: List of context
         """
         context = []
-        # Generate Sub-Queries including original query
-        sub_queries = await get_sub_queries(query, self.role, self.cfg) + [query]
+        # Generate Sub-Queries including original idea
+        sub_queries = await get_sub_queries(idea, self.role, self.cfg) + [idea]
         await stream_output("logs",
                             f"🧠 I will conduct my research based on the following queries: {sub_queries}...",
                             self.websocket)
@@ -133,4 +134,3 @@ class GPTResearcher:
         context_compressor = ContextCompressor(documents=pages, embeddings=self.memory.get_embeddings())
         # Run Tasks
         return context_compressor.get_context(query, max_results=8)
-
