@@ -7,17 +7,17 @@ import json
 from tavily import TavilyClient
 
 
-class GoogleSearch:
+class IdeaResearch:
     """
     Tavily API Retriever
     """
-    def __init__(self, query):
+    def __init__(self, idea):
         """
         Initializes the TavilySearch object
         Args:
-            query:
+            idea:
         """
-        self.query = query
+        self.idea = idea
         self.api_key = self.get_api_key() #GOOGLE_API_KEY
         self.cx_key = self.get_cx_key() #GOOGLE_CX_KEY
         self.client = TavilyClient(self.api_key)
@@ -50,15 +50,15 @@ class GoogleSearch:
                             "You can get a key at https://developers.google.com/custom-search/v1/overview")
         return api_key
 
-    def search(self, max_results=7):
+    def research(self, max_results=7):
         """
-        Searches the query
+        Researches the idea
         Returns:
 
         """
         """Useful for general internet search queries using the Google API."""
-        print("Searching with query {0}...".format(self.query))
-        url = f"https://www.googleapis.com/customsearch/v1?key={self.api_key}&cx={self.cx_key}&q={self.query}&start=1"
+        print("Researching with idea {0}...".format(self.idea))
+        url = f"https://www.googleapis.com/customsearch/v1?key={self.api_key}&cx={self.cx_key}&q={self.idea}&start=1"
         resp = requests.get(url)
 
         if resp is None:

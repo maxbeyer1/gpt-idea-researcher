@@ -6,6 +6,7 @@ from .serper.serper import SerperSearch
 from .serpapi.serpapi import SerpApiSearch
 from .searx.searx import SearxSearch
 from .bing.bing import BingSearch
+from .idea_research.idea_research import IdeaResearch
 
 __all__ = [
     "TavilySearch",
@@ -15,5 +16,6 @@ __all__ = [
     "SerpApiSearch",
     "GoogleSearch",
     "SearxSearch",
-    "BingSearch"
+    "BingSearch",
+    "IdeaResearch"
 ]
