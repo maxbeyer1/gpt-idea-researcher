@@ -3,8 +3,6 @@ from gpt_researcher.config import Config
 from gpt_researcher.master.functions import *
 from gpt_researcher.context.compression import ContextCompressor
 from gpt_researcher.memory import Memory
-from gpt_researcher.retrievers import get_retriever
-
 
 class GPTResearcher:
     """
@@ -46,13 +44,13 @@ class GPTResearcher:
         if self.source_urls:
             self.context = await self.get_context_by_urls(self.source_urls)
         else:
-            self.context = await self.get_context_by_search(self.idea)
+            self.context = await self.get_context_by_idea(self.idea)
 
         # Write Research Report
         if self.report_type == "custom_report":
             self.role = self.cfg.agent_role if self.cfg.agent_role else self.role
         await stream_output("logs", f"✍️ Writing {self.report_type} for research task: {self.idea}...", self.websocket)
-        report = await generate_report(query=self.idea, context=self.context,
+        report = await generate_report(idea=self.idea, context=self.context,
                                        agent_role_prompt=self.role, report_type=self.report_type,
                                        websocket=self.websocket, cfg=self.cfg)
         time.sleep(2)
@@ -67,26 +65,26 @@ class GPTResearcher:
                             f"🧠 I will conduct my research based on the following urls: {new_search_urls}...",
                             self.websocket)
         scraped_sites = scrape_urls(new_search_urls, self.cfg)
-        return await self.get_similar_content_by_query(self.idea, scraped_sites)
+        return await self.get_similar_content_by_idea(self.idea, scraped_sites)
 
-    async def get_context_by_search(self, idea):
+    async def get_context_by_idea(self, idea):
         """
            Generates the context for the research task by searching the idea and scraping the results
         Returns:
             context: List of context
         """
         context = []
-        # Generate Sub-Queries including original idea
-        sub_queries = await get_sub_queries(idea, self.role, self.cfg) + [idea]
+        # Generate Sub-Ideas including original idea
+        sub_ideas = await get_sub_ideas(idea, self.role, self.cfg) + [idea]
         await stream_output("logs",
-                            f"🧠 I will conduct my research based on the following queries: {sub_queries}...",
+                            f"🧠 I will conduct my research based on the following ideas: {sub_ideas}...",
                             self.websocket)
 
-        # Run Sub-Queries
-        for sub_query in sub_queries:
-            await stream_output("logs", f"\n🔎 Running research for '{sub_query}'...", self.websocket)
-            scraped_sites = await self.scrape_sites_by_query(sub_query)
-            content = await self.get_similar_content_by_query(sub_query, scraped_sites)
+        # Run Sub-Ideas
+        for sub_idea in sub_ideas:
+            await stream_output("logs", f"\n🔎 Running research for '{sub_idea}'...", self.websocket)
+            scraped_sites = await self.scrape_sites_by_idea(sub_idea)
+            content = await self.get_similar_content_by_idea(sub_idea, scraped_sites)
             await stream_output("logs", f"📃 {content}", self.websocket)
             context.append(content)
 
@@ -108,17 +106,17 @@ class GPTResearcher:
 
         return new_urls
 
-    async def scrape_sites_by_query(self, sub_query):
+    async def scrape_sites_by_idea(self, sub_idea):
         """
-        Runs a sub-query
+        Runs a sub-idea
         Args:
-            sub_query:
+            sub_idea:
 
         Returns:
             Summary
         """
         # Get Urls
-        retriever = self.retriever(sub_query)
+        retriever = self.retriever(sub_idea)
         search_results = retriever.search(max_results=self.cfg.max_search_results_per_query)
         new_search_urls = await self.get_new_urls([url.get("href") for url in search_results])
 
@@ -128,9 +126,9 @@ class GPTResearcher:
         scraped_content_results = scrape_urls(new_search_urls, self.cfg)
         return scraped_content_results
 
-    async def get_similar_content_by_query(self, query, pages):
-        await stream_output("logs", f"📃 Getting relevant content based on query: {query}...", self.websocket)
+    async def get_similar_content_by_idea(self, idea, pages):
+        await stream_output("logs", f"📃 Getting relevant content based on idea: {idea}...", self.websocket)
         # Summarize Raw Data
         context_compressor = ContextCompressor(documents=pages, embeddings=self.memory.get_embeddings())
         # Run Tasks
-        return context_compressor.get_context(query, max_results=8)
+        return context_compressor.get_context(idea, max_results=8)
