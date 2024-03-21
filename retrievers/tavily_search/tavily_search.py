@@ -10,13 +10,13 @@ class TavilySearch():
     """
     Tavily API Retriever
     """
-    def __init__(self, idea):
+    def __init__(self, query):
         """
         Initializes the TavilySearch object
         Args:
-            idea:
+            query:
         """
-        self.idea = idea
+        self.query = query
         self.api_key = self.get_api_key()
         self.client = TavilyClient(self.api_key)
 
@@ -34,20 +34,18 @@ class TavilySearch():
                             "You can get a key at https://app.tavily.com")
         return api_key
 
-    def research(self, max_results=7):
+    def search(self, max_results=7):
         """
-        Researches the idea
+        Searches the query
         Returns:
 
         """
         try:
-            # Generate queries for researching the idea
-            queries = [self.idea + ' market research', self.idea + ' competitors', self.idea + ' demand', self.idea + ' features', self.idea + ' viability', self.idea + ' resources', self.idea + ' tech stack']
-            # Search the queries
-            results = [self.client.search(query, search_depth="advanced", max_results=max_results) for query in queries]
+            # Search the query
+            results = self.client.search(self.query, search_depth="advanced", max_results=max_results)
             # Return the results
-            research_response = [{"query": query, "results": [{"href": obj["url"], "body": obj["content"]} for obj in result.get("results", [])]} for query, result in zip(queries, results)]
+            search_response = [{"href": obj["url"], "body": obj["content"]} for obj in results.get("results", [])]
         except Exception as e: # Fallback in case overload on Tavily Search API
             ddg = DDGS()
-            research_response = [{"query": query, "results": ddg.text(query, region='wt-wt', max_results=max_results)} for query in queries]
-        return research_response
+            search_response = ddg.text(self.query, region='wt-wt', max_results=max_results)
+        return search_response

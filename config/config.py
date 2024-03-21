@@ -4,7 +4,7 @@ import os
 
 
 class Config:
-    """Config class for Idea Researcher."""
+    """Config class for GPT Researcher."""
 
     def __init__(self, config_file: str = None):
         """Initialize the config class."""
@@ -21,16 +21,13 @@ class Config:
         self.temperature = float(os.getenv('TEMPERATURE', 0.55))
         self.user_agent = os.getenv('USER_AGENT', "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                                                    "(KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0")
-        self.max_search_results_per_query = int(os.getenv('MAX_SEARCH_RESULTS_PER_QUERY', 10))
+        self.max_search_results_per_query = int(os.getenv('MAX_SEARCH_RESULTS_PER_QUERY', 5))
         self.memory_backend = os.getenv('MEMORY_BACKEND', "local")
         self.total_words = int(os.getenv('TOTAL_WORDS', 1000))
         self.report_format = os.getenv('REPORT_FORMAT', "APA")
         self.max_iterations = int(os.getenv('MAX_ITERATIONS', 3))
         self.agent_role = os.getenv('AGENT_ROLE', None)
         self.scraper = os.getenv("SCRAPER", "bs")
-        self.idea_type = os.getenv('IDEA_TYPE', 'product')
-        self.research_areas = os.getenv('RESEARCH_AREAS', 'market,competitors,demand,features,viability,resources,tech stack').split(',')
-        self.report_format = os.getenv('REPORT_FORMAT', 'pdf')
 
         self.load_config_file()
 
@@ -42,3 +39,4 @@ class Config:
             config = json.load(f)
         for key, value in config.items():
             self.__dict__[key] = value
+
