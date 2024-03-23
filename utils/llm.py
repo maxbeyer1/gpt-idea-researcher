@@ -2,12 +2,14 @@
 from __future__ import annotations
 import json
 from fastapi import WebSocket
-from langchain.adapters import openai as lc_openai
+from langchain_community.adapters import openai as lc_openai
 from colorama import Fore, Style
 from typing import Optional
 
 from gpt_researcher.master.prompts import auto_agent_instructions
-
+from traceloop.sdk import Traceloop
+  
+Traceloop.init(disable_batch=True, api_key="c399a43a06ae7ec7513a724ec82e2b7f29ad11d38cd1d34d84c34bc2f086ccb9ee63ca4e47f0b0b0e80e5069ef48ebde")
 
 async def create_chat_completion(
         messages: list,  # type: ignore

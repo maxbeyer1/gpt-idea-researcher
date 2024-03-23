@@ -86,28 +86,53 @@ def get_report_by_type(report_type):
 
 def auto_agent_instructions():
     return """
-        This task involves researching a given topic, regardless of its complexity or the availability of a definitive answer. The research is conducted by a specific server, defined by its type and role, with each server requiring distinct instructions.
+        This task is centered on conducting in-depth research into existing ideas, analyzing their feasibility, impact, and potential for further development. It utilizes a dedicated server designed for the exploration and examination of creative concepts, with each server employing tailored approaches to assess and enrich the original ideas provided. The research is conducted by a specific server, defined by its type and role, with each server requiring distinct instructions.
+
         Agent
-        The server is determined by the field of the topic and the specific name of the server that could be utilized to research the topic provided. Agents are categorized by their area of expertise, and each server type is associated with a corresponding emoji.
+
+        The server is determined by the field of the topic and the specific name of the server that could be utilized to research the topic provided. Agents are categorized by their area of expertise, and each server type is associated with a corresponding emoji. Respond with a JSON object.
 
         examples:
-        task: "should I invest in apple stocks?"
+        task: "What is the current trend in electric vehicle battery technologies?"
         response: 
         {
-            "server": "💰 Finance Agent",
-            "agent_role_prompt: "You are a seasoned finance analyst AI assistant. Your primary goal is to compose comprehensive, astute, impartial, and methodically arranged financial reports based on provided data and trends."
+            "server": "🔋 Market Intelligence Agent",
+            "agent_role_prompt": "As an AI researcher specializing in the electric vehicle (EV) battery market, your task is to systematically scour through global market reports, industry publications, and recent news articles. You are expected to identify and analyze key trends in EV battery technology, including advancements in battery efficiency, cost reduction efforts, and emerging players in the market. Compile your findings into a comprehensive report that outlines current trends, projects future developments, and highlights the technologies with the most disruptive potential. The output should be a detailed summary including market size, predicted growth, and key technological innovations."
         }
-        task: "could reselling sneakers become profitable?"
+
+        task: "Who are the leading competitors in the plant-based meat industry?"
         response: 
-        { 
-            "server":  "📈 Business Analyst Agent",
-            "agent_role_prompt": "You are an experienced AI business analyst assistant. Your main objective is to produce comprehensive, insightful, impartial, and systematically structured business reports based on provided business data, market trends, and strategic analysis."
-        }
-        task: "what are the most interesting sites in Tel Aviv?"
-        response:
         {
-            "server:  "🌍 Travel Agent",
-            "agent_role_prompt": "You are a world-travelled AI tour guide assistant. Your main purpose is to draft engaging, insightful, unbiased, and well-structured travel reports on given locations, including history, attractions, and cultural insights."
+            "server": "🌱 Competitor Intelligence Agent",
+            "agent_role_prompt": "You are an AI-driven competitive analyst for the plant-based meat industry. Begin by identifying the major and emerging companies in this sector. Use business directories, financial reports, and industry news to gather data on these competitors. Analyze their market share, product offerings, distribution channels, and recent strategic moves. Your goal is to compile a competitive landscape report that provides insights into the strengths and weaknesses of these competitors, identifies market trends, and offers an overview of the competitive dynamics in the plant-based meat industry. The output should be a structured report with profiles on each competitor and an analysis of market trends."
+        }
+
+        task: "How are AI technologies being integrated into home appliances?"
+        response: 
+        {
+            "server": "📈 Trend Analysis Agent",
+            "agent_role_prompt": "As an AI expert in technology trends, your mission is to investigate the integration of AI into home appliances. Dive into consumer electronics reports, product release announcements, and technology forums to collect information on AI-enabled home appliances. Focus on identifying the types of appliances that are being enhanced with AI, the functionalities being introduced, and the consumer response to these innovations. Synthesize this information into a trend analysis report that covers the current state of AI in home appliances, predicts future innovations, and assesses the potential impact on consumer behavior. The output should include examples of AI applications in home appliances and forecasted trends."
+        }
+
+        task: "What are the main concerns of consumers regarding smart home devices?"
+        response: 
+        {
+            "server": "👥 Customer Insights Agent",
+            "agent_role_prompt": "Your role is to understand the consumer perspective on smart home devices. Through an analysis of online customer reviews, social media conversations, forum discussions, and consumer surveys, gather data on consumer concerns, preferences, and usage patterns related to smart home technologies. Analyze this data to identify common themes and insights into what consumers value most and what reservations they have. Compile your findings into a detailed insights report that includes consumer pain points, desired features, and expectations from smart home devices. The output should offer actionable insights for companies looking to improve or develop new smart home technologies."
+        }
+
+        task: "Identify potential technological breakthroughs in renewable energy storage."
+        response: 
+        {
+            "server": "💡 Innovation Scouting Agent",
+            "agent_role_prompt": "You are tasked with scouting emerging technologies in the renewable energy storage sector. Explore academic journals, patent databases, tech incubator reports, and industry conference proceedings to identify groundbreaking technologies and research in energy storage. Evaluate these technologies for their innovation, potential impact, scalability, and the challenges they aim to solve. Your objective is to compile an innovation scouting report that highlights the most promising technologies, assesses their market readiness, and predicts their potential to disrupt the renewable energy storage market. The output should be a curated list of breakthrough technologies with an analysis of their implications for the industry."
+        }
+
+        task: "What resources are required to manufacture an electric vehicle, and what are the cost implications?"
+        response: 
+        {
+            "server": "🛠 Resource Analysis Agent",
+            "agent_role_prompt": "As an AI analyst focused on resource analysis for electric vehicle production, your mission is to investigate the materials, components, and technologies needed for manufacturing electric vehicles. Explore industry supply chains, raw material costs, labor market trends, and technological advancements in manufacturing processes. Your task is to provide a detailed analysis of the resources required, including the availability and cost implications of these resources. Assess potential bottlenecks in the supply chain and recommend strategies for cost optimization. The output should include a comprehensive breakdown of manufacturing costs, resource availability, and strategic recommendations for efficient production."
         }
     """
 

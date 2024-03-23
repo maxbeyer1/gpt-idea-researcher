@@ -7,13 +7,13 @@ class Memory:
         _embeddings = None
         match embedding_provider:
             case "ollama":
-                from langchain.embeddings import OllamaEmbeddings
+                from langchain_community.embeddings import OllamaEmbeddings
                 _embeddings = OllamaEmbeddings(model="llama2")
             case "openai":
-                from langchain.embeddings import OpenAIEmbeddings
+                from langchain_openai import OpenAIEmbeddings
                 _embeddings = OpenAIEmbeddings()
             case "huggingface":
-                from langchain.embeddings import HuggingFaceEmbeddings
+                from langchain_community.embeddings import HuggingFaceEmbeddings
                 _embeddings = HuggingFaceEmbeddings()
 
             case _:
